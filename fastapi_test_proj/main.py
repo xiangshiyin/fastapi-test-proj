@@ -1,7 +1,9 @@
 from typing import Union
 
+import asyncio
 from fastapi import FastAPI
 from pydantic import BaseModel
+import time
 
 app = FastAPI()
 
@@ -15,6 +17,18 @@ class Item(BaseModel):
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+
+@app.get("/sync-task")
+def sync_task():
+    time.sleep(15)  # This is a blocking operation
+    return {"message": "Task completed after 15 seconds"}
+
+
+@app.get("/long-task")
+async def long_task():
+    await asyncio.sleep(15)  # Simulate a long task by waiting for 5 seconds
+    return {"message": "Task completed after 15 seconds"}
 
 
 @app.get("/items/{item_id}")
